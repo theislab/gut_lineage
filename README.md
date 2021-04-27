@@ -17,6 +17,12 @@ The notebooks contain code for the following analyses:
 
 Differential expression tests were carried out using limma in R.
 
+In addition, we added several Python functions, which we used to carry out the analysis:
+* cal_density.py: Computes a density plot on an embedding, now part of `scanpy` in `tl.embedding`
+* combat.py: Adjusted ComBat function that accounts for changes in cell type composition for the batch correction
+* bar_frequency.py: Creates a barplot of the composition for a certain covariate across conditions
+* genes_to_xls.py: Enables saving of the `tl.rank_genes_groups` results as Excel table 
+
 The data has been deposited in GEO under accession number [GSE152325](https://www-ncbi-nlm-nih-gov.ezproxy.u-pec.fr/geo/query/acc.cgi?acc=GSE152325). The preprocessed, filtered and annotated count matrices are provided as supplementary file as a Anndata object (h5ad-file).
 
 For further exploration load the `adata.h5ad` into a cellxgene browser for visualization or into a python-session for additional analyses using `scanpy`.
