@@ -5,13 +5,15 @@ A. Böttcher, M. Büttner, S. Tritschler, M. Sterr, A. Aliluev, ..., F.J.Theis, 
 
 The notebooks contain code for the following analyses:
 
-* QC, preprocessing, normalisation 
-* Batch correction using adjusted ComBat
-* Clustering and annotation steps (input data are raw count matrices)
-* Cell type annotation
-* Analysis of control groups 
-* Analysis of mutant groups (Celsr1 crsh hemizygous mouse line)
-* Pseudotime analysis
+* QC, preprocessing -> gut_AB_AL_cell_filtering.ipynb
+* Normalisation and preparation of batch effect correction -> gut_AB_AL_preBatch_cor.ipynb 
+* Batch correction using adjusted ComBat -> gut_AB_AL_batch_cor.ipynb
+* Cell type annotation (control samples)
+  * ISC: gut_AB_AL_control_ISC_annotation.ipynb
+  * Goblet, Paneth and Tuft cells: gut_AB_AL_GPT_annotation.ipynb
+  * EEC: gut_AB_AL_EEC_annotation.ipynb
+* Analysis of control groups and pseudotime analysis -> gut_AB_AL_cell_identity-lineage_inference.ipynb
+* Annotation and analysis of mutant groups (Celsr1 crsh hemizygous mouse line) -> gut_AB_AL_mutant_analysis.ipynb
 
 Differential expression tests were carried out using limma in R.
 
