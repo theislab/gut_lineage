@@ -15,10 +15,10 @@ The notebooks contain code for the following analyses:
 
 Differential expression tests were carried out using limma in R.
 
-The data has been deposited in GEO under accession number GSE152325. The preprocessed, filtered and annotated count matrices are provided as supplementary file as a Anndata object (h5ad-file).
+The data has been deposited in GEO under accession number [GSE152325](https://www-ncbi-nlm-nih-gov.ezproxy.u-pec.fr/geo/query/acc.cgi?acc=GSE152325). The preprocessed, filtered and annotated count matrices are provided as supplementary file as a Anndata object (h5ad-file).
 
-For further exploration load the adata.h5ad into a cellxgene browser for visualization or into a python-session for additional analyses using scanpy.
+For further exploration load the `adata.h5ad` into a cellxgene browser for visualization or into a python-session for additional analyses using `scanpy`.
 
-Note that the analysis was done with scanpy v. 1.3.1. Some functions have changed in newer versions of scanpy. For other package versions please consult the notebook or the methods in the supplementary information of the manuscript. Numeric results can vary depending on package versions and e.g. affect clustering.
+Note that the analysis was done with `scanpy v. 1.3.1`. Some functions have changed in newer versions of scanpy. For other package versions please consult the notebook or the methods in the supplementary information of the manuscript. Numeric results can vary depending on package versions and e.g. affect clustering.
 
 If the materials in this repo are of use to you, please consider citing the above publication.
