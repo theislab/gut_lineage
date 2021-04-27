@@ -1,4 +1,4 @@
-# Gut lineage analysis
+# Cell fate priming via non-canonical Wnt/PCP signalling in the small intestinal epithelium - lineage analysis in single-cell RNAsequencing data
 
 This repository contains all scripts to reproduce the results of the single-cell data from:
 A. Böttcher, M. Büttner, S. Tritschler, M. Sterr, A. Aliluev, ..., F.J.Theis, H. Lickert, "Non-canonical Wnt/PCP signalling regulates intestinal stem cell lineage priming towards enteroendocrine and Paneth cell fates", Nature Cell Biology, January 2021 - see manuscript [here](https://www.nature.com/articles/s41556-020-00617-2) and [author correction here](https://www.nature.com/articles/s41556-021-00667-0).
@@ -23,4 +23,4 @@ For further exploration load the `adata.h5ad` into a cellxgene browser for visua
 
 Note that the analysis was done with `scanpy v. 1.3.1`. Some functions have changed in newer versions of scanpy. For other package versions please consult the notebook or the methods in the supplementary information of the manuscript. Numeric results can vary depending on package versions and e.g. affect clustering.
 
-If the materials in this repo are of use to you, please consider citing the above publication.
+If the materials in this repository are of use to you, please cite publication linked above.
