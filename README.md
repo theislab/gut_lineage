@@ -1,13 +1,16 @@
-# gut_lineage
+# Gut lineage analysis
 
 This repository contains all scripts to reproduce the results of the single-cell data from:
-A. Böttcher et al., "Wnt/PCP-primed intestinal stem cells differentiate into enteroendocrine or Paneth cells", 2020
+A. Böttcher, M. Büttner, S. Tritschler, M. Sterr, A. Aliluev, ..., F.J.Theis, H. Lickert, "Non-canonical Wnt/PCP signalling regulates intestinal stem cell lineage priming towards enteroendocrine and Paneth cell fates", Nature Cell Biology, January 2021 - see manuscript [here](https://www.nature.com/articles/s41556-020-00617-2) and [author correction here](https://www.nature.com/articles/s41556-021-00667-0).
 
 The notebooks contain code for the following analyses:
 
-* QC, preprocessing, clustering and annotation steps (input data are raw count matrices)
-* Data annotation
-* Analysis of control groups
+* QC, preprocessing, normalisation 
+* Batch correction using adjusted ComBat
+* Clustering and annotation steps (input data are raw count matrices)
+* Cell type annotation
+* Analysis of control groups 
+* Analysis of mutant groups (Celsr1 crsh hemizygous mouse line)
 * Pseudotime analysis
 
 Differential expression tests were carried out using limma in R.
