@@ -7,10 +7,10 @@ library(ggplot2)
 library(RColorBrewer)
 library(dplyr)
 
-f_path <- '~/Documents/Cooperations/Böttcher_IDR/10X_data/analysis/notebooks/write/ISC_PC_EEC_GC_Tuft_ref.h5ad'
+f_path <- '~/Desktop/tmp_folder/data/gut_AB_AL_log_cor_control_anno.h5ad'
 dset <- h5read(f_path, '/',compoundAsDataFrame=FALSE)
-figure_path <- '~/Documents/Cooperations/Böttcher_IDR/10X_data/analysis/notebooks/figures/'
-file_path <- '~/Documents/Cooperations/Böttcher_IDR/10X_data/analysis/notebooks/table/'
+figure_path <- '~/Desktop/tmp_folder/figures/'
+file_path <- '~/Desktop/tmp_folder/table/'
 today <- format(Sys.Date(), '%y%m%d')
 #get genes/cell ID
 barcodes <- unlist(dset$obs$index)
@@ -29,9 +29,8 @@ n_genes <- dset$obs$n_genes
 sample_levels <- c("CD_1" ,"CD_2", "CD_3", "Control_1",  "Control_2" , "Control_6" ,          
                    "Control_3_FVR" ,  "Control_4_FVR", "Control_5_FVR","Control_7_FVR_only")
 cell_type_levels <- c("ISC", "Enterocyte", "Enterocyte progenitor",  
-                      "Goblet progenitor" , "early Goblet"  ,   "Goblet 1"  ,  
-                      "Goblet 2",
-                      "Paneth primed ISC", "Paneth progenitor" ,  "Paneth 2" ,   "Paneth 1",     
+                      "Goblet progenitor" , "early Goblet"  ,   "Goblet cell"  ,  
+                      "Paneth primed ISC", "Paneth progenitor" ,  "Paneth 1" ,   "Paneth 2",     
                       "Lgr5+ EEC" ,  "Sox4+ early EE progenitor" , 
                       "Ngn3 progenitor", "Isl1/Arx progenitor",  
                       "Pax4 progenitor" ,"Ghrl progenitor",  
@@ -39,9 +38,8 @@ cell_type_levels <- c("ISC", "Enterocyte", "Enterocyte progenitor",
                       "Tuft progenitor" ,  "Tuft 1" , "Tuft 2")
 
 progen_test_levels <- c("ISC", "Enterocyte", "Enterocyte progenitor",  
-                        "Goblet progenitor" ,  "Goblet progenitor"  ,   "Goblet 1"  ,  
-                        "Goblet 2",
-                        "Paneth primed ISC", "Paneth progenitor" ,  "Paneth 2" ,   "Paneth 1",     
+                        "Goblet progenitor" ,  "Goblet progenitor"  ,   "Goblet cell"  ,  
+                        "Paneth primed ISC", "Paneth progenitor" ,  "Paneth 1" ,   "Paneth 2",     
                         "Lgr5+ EEC" ,  "Sox4+ early EE progenitor" , 
                         "Ngn3 progenitor", "Isl1/Arx progenitor",  
                         "Pax4 progenitor" ,"Ghrl progenitor",  
@@ -257,76 +255,76 @@ for (i in 1:(dim(pairs2)[1])){
 ##################################
 # rank plots for all comparisons #
 ##################################
-files <- list.files(path = file_path, pattern = 'controls.csv')
-files <- files[grepl('181017', files)]
-files <- files[!grepl('mutant', files)]
+# files <- list.files(path = file_path, pattern = 'controls.csv')
+# files <- files[grepl('181017', files)]
+# files <- files[!grepl('mutant', files)]
 
 #####
 # create ranking plots for progenitor vs ISC 
 #####
-for (file in files){
-  titling <- paste(sapply(strsplit(file, '_', fixed=TRUE), '[', 3:5), collapse=' ') 
-  tmp <- read.csv(paste0(file_path, file))
-  shorten <- 1:min(30, dim(tmp)[1])
-  tmp <- tmp[order(abs(tmp$logFC), decreasing = TRUE),][shorten,]
-  tmp$color <- c( 'cornflowerblue','black')[1+as.numeric(tmp$logFC>0)]
-  
-  p0 <- ggplot(tmp, aes(x=shorten, y=abs(logFC), color=color)) + geom_blank() + 
-    labs(x='rank', y='log fold change') + 
-    ggtitle(titling) +  
-    expand_limits(y=c(0,5)) +
-    annotate('text', shorten, abs(tmp$logFC), label=tmp$X, color=tmp$color, angle = 90) + 
-    theme_bw() + theme(text = element_text(size=15))
-  ggsave(plot = p0, filename = paste0(figure_path,  'rank_plot_', today,'_', titling, '.pdf'), width=5, height=5)
-}
-
-for (file in files){
-  titling <- paste(sapply(strsplit(file, '_', fixed=TRUE), '[', rev(3:5)), collapse=' ') 
-  tmp <- read.csv(paste0(file_path, file))
-  shorten <- 1:min(30, dim(tmp)[1])
-  tmp <- tmp[order(abs(tmp$logFC), decreasing = TRUE),][shorten,]
-  tmp$color <- c( 'cornflowerblue','black')[1+as.numeric(tmp$logFC<0)]
-  
-  p0 <- ggplot(tmp, aes(x=shorten, y=abs(logFC), color=color)) + geom_blank() + 
-    labs(x='rank', y='log fold change') + 
-    ggtitle(titling) +  
-    expand_limits(y=c(0,5)) +
-    annotate('text', shorten, abs(tmp$logFC), label=tmp$X, color=tmp$color, angle = 90) + 
-    theme_bw() + theme(text = element_text(size=15))
-  ggsave(plot = p0, filename = paste0(figure_path,  'rank_plot_swap_', today,'_', titling, '.pdf'), width=5, height=5)
-}
-
-for (file in files){
-  titling <- paste(sapply(strsplit(file, '_', fixed=TRUE), '[', 3:5), collapse=' ') 
-  tmp <- read.csv(paste0(file_path, file))
-  shorten <- 1:min(30, dim(tmp)[1])
-  tmp <- tmp[order(tmp$logFC, decreasing = TRUE),][shorten,]
-  tmp$color <- c( 'cornflowerblue','black')[1+as.numeric(tmp$logFC>0)]
-  
-  p0 <- ggplot(tmp, aes(x=shorten, y=logFC, color=color)) + geom_blank() + 
-    labs(x='rank', y='log fold change') + 
-    ggtitle(titling) +  
-    expand_limits(y=c(-0.2,5)) +
-    annotate('text', shorten, abs(tmp$logFC), label=tmp$X, color=tmp$color, angle = 90) + 
-    theme_bw() + theme(text = element_text(size=15))
-  ggsave(plot = p0, filename = paste0(figure_path, 'rank_plot_only_pos_',today,'_', titling, '.pdf'), width=5, height=5)
-}
-
-for (file in files){
-  titling <- paste(sapply(strsplit(file, '_', fixed=TRUE), '[', rev(3:5)), collapse=' ') 
-  tmp <- read.csv(paste0(file_path, file))
-  shorten <- 1:min(30, dim(tmp)[1])
-  tmp <- tmp[order(tmp$logFC, decreasing = FALSE),][shorten,]
-  tmp$color <- c( 'cornflowerblue','black')[1+as.numeric(tmp$logFC<0)]
-  
-  p0 <- ggplot(tmp, aes(x=shorten, y=abs(logFC), color=color)) + geom_blank() + 
-    labs(x='rank', y='log fold change') + 
-    ggtitle(titling) +  
-    expand_limits(y=c(-0.2,5)) +
-    annotate('text', shorten, abs(tmp$logFC), label=tmp$X, color=tmp$color, angle = 90) + 
-    theme_bw() + theme(text = element_text(size=15))
-  ggsave(plot = p0, filename = paste0(figure_path, 'rank_plot_only_pos_swap_',today,'_', titling, '.pdf'), width=5, height=5)
-}
+# for (file in files){
+#   titling <- paste(sapply(strsplit(file, '_', fixed=TRUE), '[', 3:5), collapse=' ') 
+#   tmp <- read.csv(paste0(file_path, file))
+#   shorten <- 1:min(30, dim(tmp)[1])
+#   tmp <- tmp[order(abs(tmp$logFC), decreasing = TRUE),][shorten,]
+#   tmp$color <- c( 'cornflowerblue','black')[1+as.numeric(tmp$logFC>0)]
+#   
+#   p0 <- ggplot(tmp, aes(x=shorten, y=abs(logFC), color=color)) + geom_blank() + 
+#     labs(x='rank', y='log fold change') + 
+#     ggtitle(titling) +  
+#     expand_limits(y=c(0,5)) +
+#     annotate('text', shorten, abs(tmp$logFC), label=tmp$X, color=tmp$color, angle = 90) + 
+#     theme_bw() + theme(text = element_text(size=15))
+#   ggsave(plot = p0, filename = paste0(figure_path,  'rank_plot_', today,'_', titling, '.pdf'), width=5, height=5)
+# }
+# 
+# for (file in files){
+#   titling <- paste(sapply(strsplit(file, '_', fixed=TRUE), '[', rev(3:5)), collapse=' ') 
+#   tmp <- read.csv(paste0(file_path, file))
+#   shorten <- 1:min(30, dim(tmp)[1])
+#   tmp <- tmp[order(abs(tmp$logFC), decreasing = TRUE),][shorten,]
+#   tmp$color <- c( 'cornflowerblue','black')[1+as.numeric(tmp$logFC<0)]
+#   
+#   p0 <- ggplot(tmp, aes(x=shorten, y=abs(logFC), color=color)) + geom_blank() + 
+#     labs(x='rank', y='log fold change') + 
+#     ggtitle(titling) +  
+#     expand_limits(y=c(0,5)) +
+#     annotate('text', shorten, abs(tmp$logFC), label=tmp$X, color=tmp$color, angle = 90) + 
+#     theme_bw() + theme(text = element_text(size=15))
+#   ggsave(plot = p0, filename = paste0(figure_path,  'rank_plot_swap_', today,'_', titling, '.pdf'), width=5, height=5)
+# }
+# 
+# for (file in files){
+#   titling <- paste(sapply(strsplit(file, '_', fixed=TRUE), '[', 3:5), collapse=' ') 
+#   tmp <- read.csv(paste0(file_path, file))
+#   shorten <- 1:min(30, dim(tmp)[1])
+#   tmp <- tmp[order(tmp$logFC, decreasing = TRUE),][shorten,]
+#   tmp$color <- c( 'cornflowerblue','black')[1+as.numeric(tmp$logFC>0)]
+#   
+#   p0 <- ggplot(tmp, aes(x=shorten, y=logFC, color=color)) + geom_blank() + 
+#     labs(x='rank', y='log fold change') + 
+#     ggtitle(titling) +  
+#     expand_limits(y=c(-0.2,5)) +
+#     annotate('text', shorten, abs(tmp$logFC), label=tmp$X, color=tmp$color, angle = 90) + 
+#     theme_bw() + theme(text = element_text(size=15))
+#   ggsave(plot = p0, filename = paste0(figure_path, 'rank_plot_only_pos_',today,'_', titling, '.pdf'), width=5, height=5)
+# }
+# 
+# for (file in files){
+#   titling <- paste(sapply(strsplit(file, '_', fixed=TRUE), '[', rev(3:5)), collapse=' ') 
+#   tmp <- read.csv(paste0(file_path, file))
+#   shorten <- 1:min(30, dim(tmp)[1])
+#   tmp <- tmp[order(tmp$logFC, decreasing = FALSE),][shorten,]
+#   tmp$color <- c( 'cornflowerblue','black')[1+as.numeric(tmp$logFC<0)]
+#   
+#   p0 <- ggplot(tmp, aes(x=shorten, y=abs(logFC), color=color)) + geom_blank() + 
+#     labs(x='rank', y='log fold change') + 
+#     ggtitle(titling) +  
+#     expand_limits(y=c(-0.2,5)) +
+#     annotate('text', shorten, abs(tmp$logFC), label=tmp$X, color=tmp$color, angle = 90) + 
+#     theme_bw() + theme(text = element_text(size=15))
+#   ggsave(plot = p0, filename = paste0(figure_path, 'rank_plot_only_pos_swap_',today,'_', titling, '.pdf'), width=5, height=5)
+# }
 
 ###################################
 # get TFs from ISC vs. progenitor #
@@ -337,7 +335,7 @@ for (file in files){
 #######
 library(biomartr)
 files <- list.files(path = file_path, pattern = 'controls.csv')
-files <- files[grepl('181017', files)]
+files <- files[grepl('210209', files)]
 filesPC_GC <- files[grep('Paneth progenitor_vs_Goblet pro', files)] 
 filesISC <- files[grep('_ISC_(c|v)', files)]
 files <- c( filesPC_GC, filesISC)
@@ -365,7 +363,7 @@ TFs <- GO_tbl[GO_tbl$goslim_goa_accession %in% c('GO:0003700'),]
 a_ix <- match(gene_list$X, TFs$mgi_symbol)
 TFs_sort <- gene_list$X[!is.na(a_ix)]
 test <- levels(TFs_sort)[as.numeric(TFs_sort)]
-write.csv(test[order(test)], file=paste0(file_path, 'TFs_progenitors_Oct.csv'), row.names = FALSE)
+write.csv(test[order(test)], file=paste0(file_path, 'TFs_progenitors_2021.csv'), row.names = FALSE)
 
 #get receptor expression 
 #   GO:0007165 signal transduction

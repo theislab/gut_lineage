@@ -10,10 +10,10 @@ today <- format(Sys.Date(), '%y%m%d')
 # limma results
 ######
 #load differential expression results for mutant vs control
-file_path <- '~/Documents/Cooperations/Böttcher_IDR/10X_data/analysis/notebooks/table/'
+file_path <- '~/Desktop/tmp_folder/table/'
 files <- list.files(path = file_path, pattern = 'mutant_vs_control_progen.csv')
 files <- files[grepl('limma_', files)]
-files <- files[grepl('181017', files)]
+files <- files[grepl('210209', files)]
 files <- files[grepl('progeni|ISC', files)] #select only progenitor and stem cell populations, not mature cells
 limma_results <- data.frame(X='', logFC=numeric(1),AveExpr=0, adj.P.Val=0, cell_type='')
 for (filing in files){
@@ -28,7 +28,7 @@ write.csv(x = limma_results, file = paste0(file_path,  'limma_results_',today,'_
 
 # load comparison between progenitors and mature cell types
 files <- list.files(path = file_path, pattern = '_controls.csv')
-files <- files[grepl('181017', files)]
+files <- files[grepl('210209', files)]
 limma_results2 <- data.frame(X='', logFC=numeric(1),AveExpr=0, 
                              adj.P.Val=0, cell_type1='', cell_type2='')
 for (filing in files){
@@ -48,7 +48,7 @@ write.csv(a[order(a)], file = paste0(file_path, 'limma_results_', today, '_diffe
 
 # load comparison between ISCs and maturing Paneth cells
 files <- list.files(path = file_path, pattern = '_controls_PC.csv')
-files <- files[grepl('181017', files)]
+files <- files[grepl('210209', files)]
 limma_results3 <- data.frame(X='', logFC=numeric(1),AveExpr=0, adj.P.Val=0, 
                              cell_type1='', cell_type2='')
 for (filing in files){
@@ -98,7 +98,7 @@ more_interesting_genes =c('Cdkn1a', "Lbh", 'Klf15', "Ier2", 'Klf3', 'Atoh1', "Sp
 #differential TFs mutant vs control
 tf_mutant_control <- read.csv(paste0(file_path,'TFs_progenitors_mutant_control_Oct.csv'))
 #differential TFs ISC vs progenitor or Paneth progenitor vs Goblet progenitor
-tf_progen <- read.csv(paste0(file_path,'TFs_progenitors_Oct.csv'))
+tf_progen <- read.csv(paste0(file_path,'TFs_progenitors_2021.csv'))
 tfs_differential = intersect(unlist(tf_mutant_control), unlist(tf_progen))
 tfs_diffset = setdiff(unlist(tf_mutant_control), unlist(tf_progen))
 write.csv(tfs_differential, 
@@ -140,11 +140,11 @@ write.csv(x = limma_results2[limma_results2$X %in% receptors,],
 #########
 #load data for summary plots
 ########
-f_path <- '~/Documents/Collaborations/Böttcher_IDR/10X_data/analysis/notebooks/write/ISC_PC_EEC_GC_Tuft_ref.h5ad'
+f_path <- '~/Desktop/tmp_folder/data/gut_AB_AL_log_cor_control_anno.h5ad'
 dset <- h5read(f_path, '/',compoundAsDataFrame=FALSE)
-figure_path <- '~/Documents/Collaborations/Böttcher_IDR/10X_data/analysis/notebooks/figures/'
+figure_path <- '~/Desktop/tmp_folder/figures/'
 
-f_path_mut <- '~/Documents/Collaborations/Böttcher_IDR/10X_data/analysis/notebooks/write/gut_AB_AL_annotated_mutants.h5ad' 
+f_path_mut <- '~/Desktop/tmp_folder/data/gut_AB_AL_control_mutants_anno.h5ad' 
 dset_mut <- h5read(f_path_mut, '/', compoundAsDataFrame = FALSE)
 
 #get genes/cell ID
@@ -158,8 +158,8 @@ sample_levels <- c( "Control_1",  "Control_2" , "Control_6" ,
 new_sample_levels <- c("Control_1",  "Control_2" , "Control_6" ,          
                        "Control_3_FVR" ,  "Control_4_FVR", "Control_5_FVR","Control_7_FVR_only",'FVF', 'FVF', 'FVF')
 cell_type_levels <- c("ISC",  "Enterocyte progenitor",  "Enterocyte",
-                      "Goblet progenitor" , "early Goblet"  ,   "Goblet 1"  ,  
-                      "Goblet 2",
+                      "Goblet progenitor" , "early Goblet"  ,   "Goblet cell"  ,  
+      
                       "Paneth primed ISC", "Paneth progenitor" ,  "Paneth 1" ,   "Paneth 2",     
                       "Lgr5+ EEC" ,   "Sox4+ early EE progenitor" , 
                       "Ngn3 progenitor", "Isl1/Arx progenitor",  
@@ -168,7 +168,6 @@ cell_type_levels <- c("ISC",  "Enterocyte progenitor",  "Enterocyte",
                       "Tuft progenitor"  , "Tuft 1" , "Tuft 2")
 split_Gpc_levels <- c("ISC", "Enterocyte progenitor",   "Enterocyte",
                       "Goblet progenitor" , "early Goblet"  ,   "Goblet cell"  ,  
-                      "Goblet cell",
                       "ISC", "Paneth progenitor" ,  "Paneth cell" ,   "Paneth cell",     
                       "EE progenitor" ,   "EE progenitor" , 
                       "EE progenitor", "EEC",  
@@ -177,8 +176,7 @@ split_Gpc_levels <- c("ISC", "Enterocyte progenitor",   "Enterocyte",
                       "Tuft progenitor"  , "Tuft cell" , "Tuft cell")
 
 proma_ct_mutant_levels <- c("ISC","Enterocyte progenitor",   "Enterocyte", 
-                            "Goblet progenitor" , "Goblet cell"  ,   "Goblet cell"  ,  
-                            "Goblet cell",
+                            "Goblet progenitor" ,  "early Goblet"   ,   "Goblet cell"  ,  
                             "ISC", "Paneth progenitor" ,  "Paneth cell" ,   "Paneth cell",     
                             "EE progenitor" ,   "EE progenitor" , 
                             "EE progenitor", "EEC",  
@@ -230,7 +228,7 @@ cellData_mut <- data.frame(mouse_line = factor(unlist(dset_mut$uns$genetics_cate
                                          levels=c('G1', 'G2M', 'S')),
                       # cell_type = factor(unlist(dset_mut$uns$cell_type_test_categories)[unlist(dset_mut$obs$cell_type_test)+1],
                       #                    levels = cell_type_levels),
-                       proma_cell_type = factor(unlist(dset_mut$uns$proma_split_Gpc_categories)[unlist(dset_mut$obs$proma_split_Gpc)+1],
+                       proma_cell_type = factor(unlist(dset_mut$uns$proma_cell_type_categories)[unlist(dset_mut$obs$proma_cell_type)+1],
                                                 levels = proma_cell_type_levels)
                        )
 #levels(cellData_mut$proma_cell_type) <- proma_ct_mutant_levels
@@ -339,6 +337,7 @@ g06 <- ggplot(cellData_mut.m[cellData_mut.m$proma_cell_type %in% c('ISC', 'Panet
 g06
 ggsave(filename = paste0(figure_path,today, '_cellcycle_per_cell_type_mutants.pdf'), plot = g06, width = 10, height=7) 
 
+#Ext Data Fig. 8c
 g06 <- ggplot(cellData_mut.m[cellData_mut.m$proma_cell_type %in% c("ISC"  ,  
                                                                    "Enterocyte progenitor" ,"Enterocyte",  
                                                                    "Goblet progenitor",'early Goblet', "Goblet cell" , 
@@ -362,7 +361,7 @@ g06 <- ggplot(cellData_mut.m[cellData_mut.m$proma_cell_type %in% c("ISC"  ,
 g06
 ggsave(filename = paste0(figure_path,today, '_cellcycle_per_cell_type_mutants.pdf'), plot = g06, width = 15, height=7) 
 
-
+#Ext Data Fig. 4 
 g07 <- ggplot(cellData.m[cellData.m$proma_cell_type %in% c("ISC"  ,  
                                                            "Enterocyte progenitor" ,"Enterocyte",  
                                                            "Goblet progenitor",'early Goblet', "Goblet cell" , 
@@ -386,29 +385,6 @@ g07 <- ggplot(cellData.m[cellData.m$proma_cell_type %in% c("ISC"  ,
 g07
 ggsave(filename = paste0(figure_path, today, '_cellcycle_per_cell_type_progen.pdf'), plot = g07, width = 7, height=7) 
 
-g08 <- ggplot(cellData.m[cellData.m$split_Gpc_type %in% c("ISC"  ,  
-                                                           "Enterocyte progenitor" ,"Enterocyte",  
-                                                           "Goblet progenitor", "early Goblet",
-                                                           "Goblet cell" , 
-                                                           "Paneth progenitor" , "Paneth cell" ,
-                                                           "EE progenitor"   ,"EEC" ,        
-                                                           "Tuft progenitor", "Tuft cell"),], 
-              aes(split_Gpc_type, value, fill=cc_score))+ 
-  scale_fill_manual(values =c('#1f77b4', '#ff7f0e', '#2ca02c'),
-                    name='Cell cycle\nphase') +
-  geom_bar(position="fill", stat='identity')  +  
-  labs(x='Cell type', y='Proliferation (%)') +
-  scale_y_continuous(breaks=c(0,0.25,0.5,0.75,1),
-                     labels=c(0, 25,50 ,75, 100)
-  ) +
-  #scale_x_discrete(breaks=c('Control_6', 'Control_5_FVR', 'Control_7_FVR_only','FVF'),
-  #                 labels=c('Control 6', 'Control 5 FVR', 'Control 7 FVR only','FVF')) +
-  theme_classic() + 
-  theme(axis.title.x = element_text(face="bold", size=15),
-        axis.title.y = element_text(face="bold", size=15),
-        axis.text.x  = element_text(angle=45, hjust = 1, size=10))
-g08
-ggsave(filename = paste0(figure_path, today, '_cellcycle_per_cell_type_progen_Gpc.pdf'), plot = g08, width = 7, height=7) 
 
 g01 <- ggplot(CD_sample_tot, aes(sample, total_count)) +# facet_wrap(~genetics)+
   geom_col(position="dodge") + #scale_fill_brewer(type='qual', palette = 'Paired', guide=FALSE) + 
@@ -476,15 +452,16 @@ g2 <- ggplot(CD_proma, aes(proma_cell_type, total_count)) +# facet_wrap(~genetic
 g2
 ggsave(filename = paste0(figure_path, today, '_counts_per_main_progen_cell_type_all_controls.pdf'), plot = g2, width = 6, height=7) 
 
+#Fig 3e 
 g21 <- ggplot(CD_split_Gpc, aes(split_Gpc_type, total_count, fill=split_Gpc_type)) +# facet_wrap(~genetics)+
   geom_col(position="dodge") + scale_fill_manual(values=colors_split_Gpc, guide=FALSE)+#scale_fill_brewer(type='qual', palette = 'Paired', guide=FALSE) + 
-  scale_y_sqrt(breaks=c(500, 1000,2000,3000,4000, 5000, 10000, 20000)) + #guide_legend() + 
+  scale_y_sqrt(breaks=c(500, 1000,2000,3000,4000, 5000, 10000, 15000)) + #guide_legend() + 
   theme_classic() + labs(title='Cell number per cell type', x='Cell type', y='Population size') +
   theme(axis.title.x = element_text(face="bold", size=15),
         axis.title.y = element_text(face="bold", size=15),
         axis.text.x  = element_text(angle=45, hjust = 1, size=10))
 g21
-ggsave(filename = paste0(figure_path, today, '_counts_per_progen_Gpc_cell_type_all_controls.pdf'), plot = g21, width = 6, height=7) 
+ggsave(filename = paste0(figure_path, today, '_counts_per_cell_type_all_controls.pdf'), plot = g21, width = 6, height=7) 
 
 
 g2 <- ggplot(CD_sample[CD_sample$sample %in% c('Control_6', 'Control_5_FVR', 'Control_7_FVR_only'),], 
@@ -505,7 +482,8 @@ ggsave(filename = paste0(figure_path, 'counts_per_refined_cell_type_c5-7.pdf'), 
 
 g2 <- ggplot(CD_sample_pro[CD_sample_pro$sample %in% c('Control_6', 'Control_5_FVR', 'Control_7_FVR_only'),], 
              aes(proma_cell_type, total_count, fill=sample)) +
-  scale_fill_manual(breaks=c('Control_6', 'Control_5_FVR', 'Control_7_FVR_only'), values= c('grey', 'firebrick1', 'cornflowerblue') ) +
+  scale_fill_manual(breaks=c('Control_6', 'Control_5_FVR', 'Control_7_FVR_only'), 
+                    values= c('grey', 'firebrick1', 'cornflowerblue') ) +
   # facet_wrap(~genetics)+
   geom_bar(position="fill", stat='identity') +   
   labs(x='Cell type', y='Population size (%)') +
@@ -521,26 +499,7 @@ ggsave(filename = paste0(figure_path, 'counts_per_main_progen_cell_type_c5-7.pdf
 
 
 
-g6 <- ggplot(CD_sample_pro[CD_sample_pro$sample %in% c('Control_6', 'Control_5_FVR', 'Control_7_FVR_only','FVF'),], 
-             aes(sample, total_count, fill=proma_cell_type)) +
-  scale_fill_manual(breaks=proma_cell_type_levels, 
-                    values=colors_proma, 
-                    name='Cell type') +
-  # facet_wrap(~genetics)+
-  geom_bar(position="fill", stat='identity') +   
-  labs(x='Sample', y='Cell type frequency (%)') +
-  scale_y_continuous(breaks=c(0,0.25,0.5,0.75,1),
-                     labels=c(0, 25,50 ,75, 100)
-  ) + 
-  scale_x_discrete(breaks=c('Control_6', 'Control_5_FVR', 'Control_7_FVR_only','FVF'),
-                   labels=c('no enrichment', 'FVR enrichment (50%)', 'FVR enrichment (90%)','FVF enrichment (50%)')) +
-  theme_classic() + 
-  theme(axis.title.x = element_text(face="bold", size=15),
-        axis.title.y = element_text(face="bold", size=15),
-        axis.text.x  = element_text(angle=45, hjust = 1, size=10))
-g6
-ggsave(filename = paste0(figure_path, today, '_counts_per_cell_type_FVF_c5-7_stacked.pdf'), plot = g6, width = 10, height=7) 
-
+#Fig 3c
 g6 <- ggplot(CD_sample_pro_Gpc[CD_sample_pro_Gpc$sample %in% c('Control_6', 'Control_5_FVR', 'Control_7_FVR_only','FVF'),], 
              aes(sample, total_count, fill=split_Gpc_type)) +
   scale_fill_manual(breaks=levels(cellData$split_Gpc_type), 
